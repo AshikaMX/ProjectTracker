@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Login - Project Samarpan</title>
+  <style>
+    :root {
+      --bg: #f2f3f5;
+      --text: #1a202c;
+      --card-bg: #ffffff;
+      --border: #ddd;
+      --accent: #1d3557;
+    }
+
+    body.dark {
+      --bg: #1a202c;
+      --text: #edf2f7;
+      --card-bg: #2d3748;
+      --border: #4a5568;
+      --accent: #48bb78;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      transition: background 0.3s ease;
+    }
+
+    .login-container {
+      background-color: var(--card-bg);
+      padding: 40px;
+      border-radius: 12px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+      width: 100%;
+      max-width: 400px;
+    }
+
+    .login-container h2 {
+      text-align: center;
+      margin-bottom: 25px;
+    }
+
+    .login-container input {
+      width: 100%;
+      padding: 12px;
+      margin-bottom: 20px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: transparent;
+      color: var(--text);
+    }
+
+    .login-container button {
+      width: 100%;
+      padding: 12px;
+      background-color: var(--accent);
+      border: none;
+      color: white;
+      border-radius: 8px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+
+    .login-container button:hover {
+      background-color: #133e72;
+    }
+
+    .message {
+      text-align: center;
+      margin-bottom: 10px;
+      font-size: 14px;
+    }
+
+    .message.error {
+      color: red;
+    }
+
+    .login-container p {
+      margin-top: 10px;
+      text-align: center;
+    }
+
+    .login-container a {
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <div class="login-container">
+    <h2>Login</h2>
+    <div id="message" class="message"></div>
+    <input type="email" id="email" placeholder="Email" />
+    <input type="password" id="password" placeholder="Password" />
+    <button onclick="login()">Login</button>
+    <p>Don't have an account? <a href="register.html">Create Account</a></p>
+  </div>
+
+  <script>
+    window.onload = () => {
+      if (localStorage.getItem("theme") === "dark") {
+        document.body.classList.add("dark");
+      }
+    };
+
+    function login() {
+      const email = document.getElementById("email").value.trim();
+      const password = document.getElementById("password").value.trim();
+      const message = document.getElementById("message");
+
+      const storedUser = JSON.parse(localStorage.getItem("user"));
+
+      if (!email || !password) {
+        message.textContent = "Please enter both fields.";
+        message.className = "message error";
+        return;
+      }
+
+      if (storedUser && storedUser.email === email && storedUser.password === password) {
+        message.textContent = "Login successful! Redirecting...";
+        message.className = "message";
+        localStorage.setItem("loggedIn", "true");
+        setTimeout(() => {
+          window.location.href = "dashboard.html";
+        }, 1000);
+      } else {
+        message.textContent = "Invalid email or password.";
+        message.className = "message error";
+      }
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,390 @@
+<!DOCTYPE html> 
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Project Samarpan - Dashboard</title>
+  <style>
+    :root {
+      --bg: #f9fafb;
+      --text: #1f2937;
+      --card-bg: #ffffff;
+      --accent: #4f46e5;
+      --border: #e5e7eb;
+      --button-bg: #6366f1;
+      --button-text: #ffffff;
+      --shadow: rgba(0, 0, 0, 0.1);
+    }
+
+    body.dark {
+      --bg: #121827;
+      --text: #e5e7eb;
+      --card-bg: #1e293b;
+      --accent: #f59e0b;
+      --border: #334155;
+      --button-bg: #f59e0b;
+      --button-text: #ffffff;
+      --shadow: rgba(255, 255, 255, 0.05);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      transition: background 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    body {
+      display: flex;
+      height: 100vh;
+      background: var(--bg);
+      color: var(--text);
+    }
+
+    .sidebar {
+      width: 260px;
+      background-color: var(--card-bg);
+      padding: 24px;
+      border-right: 1px solid var(--border);
+      box-shadow: 2px 0 12px var(--shadow);
+    }
+
+    .sidebar h2 {
+      font-size: 24px;
+      margin-bottom: 30px;
+      color:rgb(221, 130, 27);
+    }
+
+    .sidebar ul {
+      list-style: none;
+    }
+
+    .sidebar li {
+      margin-bottom: 18px;
+      font-size: 16px;
+      padding: 10px 14px;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: background 0.2s ease;
+    }
+
+    .sidebar li {
+    transition: background 0.2s ease, transform 0.2s ease;
+    }
+
+    .sidebar li:hover,
+    .sidebar li.active {
+    background-color: var(--accent);
+    color: #fff;
+    transform: translateX(6px); /* 👈 Slide slightly right */
+    }
+
+
+    .main-content {
+      flex: 1;
+      padding: 30px;
+      overflow-y: auto;
+      background: linear-gradient(135deg, #fef9ff, #ecfdf5);
+    }
+
+    body.dark .main-content {
+      background: linear-gradient(135deg, #1a1c2b, #10141c);
+    }
+
+    .dashboard-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 30px;
+    }
+
+    .theme-toggle {
+      cursor: pointer;
+      font-size: 18px;
+      background-color: var(--button-bg);
+      color: var(--button-text);
+      border: none;
+      border-radius: 50%;
+      width: 44px;
+      height: 44px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 14px var(--shadow);
+    }
+
+    .theme-toggle:hover {
+      transform: scale(1.05);
+    }
+
+    .add-project {
+      border: 2px dashed var(--border);
+      height: 220px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--card-bg);
+      border-radius: 16px;
+      margin-bottom: 30px;
+      box-shadow: 0 2px 8px var(--shadow);
+    }
+
+    .add-project button {
+      background: var(--accent);
+      color: white;
+      padding: 14px 28px;
+      font-size: 16px;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      box-shadow: 0 6px 16px var(--shadow);
+      transition: transform 0.2s ease;
+    }
+
+    .add-project button:hover {
+      transform: translateY(-2px);
+    }
+
+    .projects-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 24px;
+    }
+
+    .project-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 20px;
+      box-shadow: 0 6px 20px var(--shadow);
+      transition: transform 0.2s ease;
+    }
+
+    .project-card:hover {
+      transform: translateY(-4px);
+    }
+
+    .project-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .project-card h3 {
+      font-size: 18px;
+      margin-bottom: 6px;
+    }
+
+    .checked-tag {
+      background-color: #10b981;
+      color: white;
+      padding: 4px 10px;
+      font-size: 12px;
+      border-radius: 12px;
+    }
+
+    .project-card p,
+    .project-card a {
+      font-size: 14px;
+      margin-top: 6px;
+      color: var(--text);
+    }
+
+    .project-card a {
+      color: var(--accent);
+      text-decoration: none;
+    }
+
+    .project-card a:hover {
+      text-decoration: underline;
+    }
+    .progress-bar-container {
+     height: 8px;
+     background: #e5e7eb;
+     border-radius: 4px;
+     overflow: hidden;
+     margin: 10px 0;
+    }
+    .progress-bar {
+    height: 100%;
+    background: var(--accent);
+    transition: width 0.3s ease;
+    }
+    .pending-tag {
+    background-color: #4a89ae;  /* amber/orange for pending */
+    color: white;
+    padding: 4px 10px;
+    font-size: 12px;
+    border-radius: 12px;
+    }
+    .checked-tag {
+    background-color: #10b981;  /* green */
+    color: white;
+    padding: 4px 10px;
+    font-size: 12px;
+    border-radius: 12px;
+    }
+
+
+
+    .actions {
+      margin-top: 14px;
+    }
+
+    .actions button {
+      background-color: var(--button-bg);
+      color: var(--button-text);
+      padding: 6px 14px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      margin-right: 8px;
+      font-size: 13px;
+      box-shadow: 0 2px 6px var(--shadow);
+    }
+
+    .actions .delete {
+      background-color: #ef4444;
+    }
+
+    .actions .archive {
+      background-color: #a855f7;
+    }
+
+    @media (max-width: 768px) {
+      .sidebar {
+        width: 100%;
+        border-bottom: 1px solid var(--border);
+        border-right: none;
+      }
+
+      .sidebar ul {
+        display: flex;
+        justify-content: space-around;
+        gap: 1rem;
+      }
+
+      .main-content {
+        padding: 20px;
+      }
+    }
+  
+  </style>
+</head>
+<body>
+  <aside class="sidebar">
+    <h2>🚀 Project Tracker</h2>
+    <ul>
+      <li class="active">Dashboard</li>
+      <li onclick="navigate('index.html')">Submit Project</li>
+      <li onclick="navigate('archived.html')">Archived</li>
+      <li onclick="logout()">Logout</li>
+    </ul>
+  </aside>
+
+  <main class="main-content">
+    <div class="dashboard-header">
+      <h1>Projects Overview</h1>
+      <button class="theme-toggle" onclick="toggleTheme()" id="themeIcon">🌙</button>
+    </div>
+
+    <div class="add-project">
+      <button onclick="navigate('index.html')">+ Add New Project</button>
+    </div>
+
+    <div class="projects-grid" id="projectsGrid"></div>
+  </main>
+
+  <script>
+    const projectsGrid = document.getElementById("projectsGrid");
+    const themeIcon = document.getElementById("themeIcon");
+
+    function loadDashboardProjects() {
+      const projects = JSON.parse(localStorage.getItem("projects")) || [];
+      projectsGrid.innerHTML = "";
+
+      projects.forEach((project, index) => {
+        if (!project.archived) {
+          const div = document.createElement("div");
+          div.className = "project-card";
+          div.innerHTML = `
+            <div class="project-header">
+              <h3>${project.name}</h3>
+              ${project.checked 
+                ? '<span class="checked-tag">✔️ Completed</span>' 
+                : '<span class="pending-tag">⏳ Pending</span>'}
+            </div>
+            <p>${project.technologies ? project.technologies.join(", ") : ""}</p>
+            <div class="progress-bar-container">
+            <div class="progress-bar" style="width: ${project.progress || 0}%"></div>
+            </div>
+            <p>Progress: ${project.progress || 0}%</p>
+
+            <p><a href="${project.github}" target="_blank">GitHub</a> | 
+               <a href="${project.deployed}" target="_blank">Live Demo</a></p>
+            <div class="actions">
+              <button class="edit" data-index="${index}">Edit</button>
+              <button class="archive" data-index="${index}">Archive</button>
+              <button class="delete" data-index="${index}">Delete</button>
+            </div>
+          `;
+          projectsGrid.appendChild(div);
+        }
+      });
+    }
+
+    function toggleTheme() {
+      document.body.classList.toggle("dark");
+      const isDark = document.body.classList.contains("dark");
+      themeIcon.textContent = isDark ? "☀️" : "🌙";
+      localStorage.setItem("theme", isDark ? "dark" : "light");
+    }
+
+    function navigate(url) {
+      window.location.href = url;
+    }
+
+    function logout() {
+    localStorage.removeItem("loggedIn");
+    window.location.href = "login.html";
+    }
+
+
+    projectsGrid.addEventListener("click", (e) => {
+      const index = e.target.getAttribute("data-index");
+     if (e.target.classList.contains("edit")) {
+     localStorage.setItem("editIndex", index);
+     navigate("index.html");
+    }
+
+
+      if (e.target.classList.contains("delete")) {
+        if (confirm("Delete this project?")) {
+          const projects = JSON.parse(localStorage.getItem("projects")) || [];
+          projects.splice(index, 1);
+          localStorage.setItem("projects", JSON.stringify(projects));
+          loadDashboardProjects();
+        }
+      }
+
+      if (e.target.classList.contains("archive")) {
+        const projects = JSON.parse(localStorage.getItem("projects")) || [];
+        projects[index].archived = true;
+        localStorage.setItem("projects", JSON.stringify(projects));
+        loadDashboardProjects();
+      }
+    });
+    if (localStorage.getItem("loggedIn") !== "true") {
+    window.location.href = "login.html";
+    }
+
+    if (localStorage.getItem("theme") === "dark") {
+      document.body.classList.add("dark");
+      themeIcon.textContent = "☀️";
+    }
+
+    window.onload = loadDashboardProjects;
+  </script>
+</body>
+</html>
